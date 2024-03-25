@@ -1,0 +1,64 @@
+//servlet program;
+import java.io.*;
+import java.util.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class QuizServlet extends HttpServlet {
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+        
+        // Retrieve or create the quiz questions list in session
+        List<String> questions = (List<String>) session.getAttribute("questions");
+        if (questions == null) {
+            questions = new ArrayList<>();
+            session.setAttribute("questions", questions);
+        }
+        
+        // Retrieve the question and answer from the request
+        String question = request.getParameter("question");
+        String answer = request.getParameter("answer");
+        
+        // Add the question and answer to the list
+        questions.add("Q: " + question + " | A: " + answer);
+        
+        // Redirect to the quiz page
+        response.sendRedirect("quiz.jsp");
+    }
+}
+//jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+    pageEncoding="UTF-8"%>
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Quiz</title>
+</head>
+<body>
+    <h1>Create a Quiz</h1>
+    
+    <form action="QuizServlet" method="post">
+        <label for="question">Question:</label><br>
+        <input type="text" id="question" name="question"><br>
+        <label for="answer">Answer:</label><br>
+        <input type="text" id="answer" name="answer"><br><br>
+        <input type="submit" value="Add Question">
+    </form>
+    
+    <h2>Quiz Questions</h2>
+    <ul>
+        <% 
+        List<String> questions = (List<String>) session.getAttribute("questions");
+        if (questions != null) {
+            for (String q : questions) {
+                out.println("<li>" + q + "</li>");
+            }
+        }
+        %>
+    </ul>
+</body>
+</html>
+

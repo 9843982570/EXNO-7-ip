@@ -1,0 +1,40 @@
+//servlet program;
+import java.io.*;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class LanguageSelectionServlet extends HttpServlet {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+            throws ServletException, IOException {
+        String language = request.getParameter("language");
+
+        if (language != null && !language.isEmpty()) {
+            // Create a cookie to store the preferred language
+            Cookie languageCookie = new Cookie("preferredLanguage", language);
+            languageCookie.setMaxAge(24 * 60 * 60); // Cookie expires in 1 day
+            response.addCookie(languageCookie);
+        }
+
+        // Redirect user to the greeting page
+        response.sendRedirect("greetingPage");
+    }
+}
+//html program
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Language Selection</title>
+</head>
+<body>
+    <h1>Select Your Preferred Language</h1>
+    <form action="LanguageSelectionServlet" method="post">
+        <label for="language">Select Language:</label>
+        <select id="language" name="language">
+            <option value="english">English</option>
+            <option value="spanish">Spanish</option>
+            <!-- Add more language options as needed -->
+        </select><br><br>
+        <input type="submit" value="Submit">
+    </form>
+</body>
+</html>
